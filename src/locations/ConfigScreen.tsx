@@ -101,7 +101,7 @@ const ConfigScreen = () => {
       <Grid.Item>
        
         <TextInput
-          //value={this.parameters.openaiApiKey===undefined?'':this.parameters.openaiApiKey}
+          //value={this.parameters.openaiApiKey===undefined?'':''}
           type="text"
           name="openaiApiKey"
           placeholder="Provide your Open AI API Key"
@@ -116,7 +116,7 @@ const ConfigScreen = () => {
           name="numberOfElements"
           placeholder="How many elements should be returned from Open AI"
         />
-      <Grid.Item><Paragraph>Hello World</Paragraph></Grid.Item>
+      <Grid.Item><Paragraph>Dimensions</Paragraph></Grid.Item>
       <Grid.Item>
       <TextInput
           //value={this.parameters.openaiApiKey===undefined?'':this.parameters.openaiApiKey}

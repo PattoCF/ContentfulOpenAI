@@ -1,15 +1,21 @@
-import React from 'react';
-import { Paragraph } from '@contentful/f36-components';
-import { FieldExtensionSDK } from '@contentful/app-sdk';
-import { useCMA, useSDK } from '@contentful/react-apps-toolkit';
-import RenderImages from '../components/renderImages';
-
+import React from "react";
+import {
+  Stack,
+  FormControl,
+  TextInput,
+  Button,
+} from "@contentful/f36-components";
+import RenderImages from "../components/renderImages";
+//import { FieldExtensionSDK } from '@contentful/app-sdk';
+//import { useCMA, useSDK } from '@contentful/react-apps-toolkit';
+//import RenderImages from '../components/renderImages';
 
 /*
 
 - config page
 -- how many picture to show
 -- API key
+- dimenions 
 
 - Field level app
 - type (new picture or outpainting) --> not sure if available via API yet
@@ -25,45 +31,70 @@ import RenderImages from '../components/renderImages';
 
 */
 
-
-
 const { Configuration, OpenAIApi } = require("openai");
 const configuration = new Configuration({
   //use config here
-  apiKey: "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"
+  apiKey: "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",
 });
 const openai = new OpenAIApi(configuration);
 
-export default class Fields extends React.Component{
-  constructor(props){
-    super(props)
+export default class Fields extends React.Component {
+  constructor(props) {
+    super(props);
     this.state = {
-      openai : undefined
-    }
-    this.response = this.response.bind(this)
+      urls: undefined, //array mit URLs, dann unten map
+      prompt: undefined,
+      openai: undefined,
+    };
+    this.makeOpenAiCall = this.makeOpenAiCall.bind(this);
   }
-  
-  response = async () => {
-    debugger
-    let openai2 = await openai.createImage({
-    prompt: "A cute baby sea otter",
-    //use config here
-    n: 2,
-    size: "1024x1024",
-  });
+  makeOpenAiCall = async () => {
+    let fieldPrompt = document.getElementById("openaiPrompt");
 
-  if(openai2 !== this.state.openai) {
+    let openaiResponse = await openai.createImage({
+      prompt: fieldPrompt.value, //"A cute baby sea otter",
+      //use config here
+      n: 2,
+      size: "1024x1024",
+    });
+
+    if (openaiResponse !== this.state.openai) {
+      let helperArray = [];
+      debugger;
+      openaiResponse.data.data.forEach((url) => {
+        helperArray.push(url);
+      });
+
       this.setState({
-        openai : openai2
-      })
+        urls: helperArray,
+        prompt: fieldPrompt.value,
+        openai: openaiResponse,
+      });
     }
-  }
-  sdk = useSDK;
-  cma = useCMA;
+  };
+
+  //cma = useCMA;
+
   render = () => {
-
-    this.response()
-  return <RenderImages openai={this.state.openai}/>
-  }
+    //if(this.state.openai === undefined) this.response()
+    return (
+      <div stye="min-height:500px">
+        <Stack>
+          <FormControl isRequired>
+            <FormControl.Label>OpenAI Prompt to create image</FormControl.Label>
+            <TextInput
+              type="text"
+              id="openaiPrompt"
+              name="openaiPrompt"
+              placeholder="Please specify your image"
+            />
+          </FormControl>
+          <Button variant="primary" onClick={this.makeOpenAiCall}>
+            Generate
+          </Button>
+        </Stack>
+        <RenderImages urls={this.state.urls} />
+      </div>
+    );
+  };
 }
-
