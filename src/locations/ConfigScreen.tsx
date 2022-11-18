@@ -1,16 +1,32 @@
-import React, { useCallback, useState, useEffect } from 'react';
-import { AppExtensionSDK } from '@contentful/app-sdk';
-import { Heading, Card,Tabs, Grid, TextInput } from '@contentful/f36-components';
-import { Paragraph } from '@contentful/f36-typography';
+import React, { useCallback, useState, useEffect } from "react";
+import { AppExtensionSDK } from "@contentful/app-sdk";
+import {
+  FormControl,
+  Heading,
+  Card,
+  Tabs,
+  Stack,
+  TextInput,
+  Select
+} from "@contentful/f36-components";
+import { Paragraph } from "@contentful/f36-typography";
 //import tokens from '@contentful/f36-tokens';
 
 //import { css } from 'emotion';
-import { /* useCMA, */ useSDK } from '@contentful/react-apps-toolkit';
+import { /* useCMA, */ useSDK } from "@contentful/react-apps-toolkit";
 
-export interface AppInstallationParameters {}
+export interface AppInstallationParameters {
+    apiKey?: string;
+    items?: number;
+    dimension?: string;
+}
 
 const ConfigScreen = () => {
-  const [parameters, setParameters] = useState<AppInstallationParameters>({});
+  const [parameters, setParameters] = useState<AppInstallationParameters>({
+      apiKey: "",
+      items: 1,
+      dimension: "",
+  });
   const sdk = useSDK<AppExtensionSDK>();
   /*
      To use the cma, inject it as follows.
@@ -28,15 +44,10 @@ const ConfigScreen = () => {
     const currentState = await sdk.app.getCurrentState();
 
     //check field values
-
+    
     return {
       // Parameters to be persisted as the app configuration.
-      parameters : {
-        openaiApiKey: 'abc',
-        numberOfElments: '2',
-        size: '1024x1024'
-
-      },
+      parameters,
       // In case you don't want to submit any update to app
       // locations, you can just pass the currentState as is
       targetState: currentState,
@@ -54,7 +65,8 @@ const ConfigScreen = () => {
     (async () => {
       // Get current parameters of the app.
       // If the app is not installed yet, `parameters` will be `null`.
-      const currentParameters: AppInstallationParameters | null = await sdk.app.getParameters();
+      const currentParameters: AppInstallationParameters | null =
+        await sdk.app.getParameters();
 
       if (currentParameters) {
         setParameters(currentParameters);
@@ -67,75 +79,109 @@ const ConfigScreen = () => {
   }, [sdk]);
 
   return (
-        <Card style={{ maxWidth: "50em", margin: "3em auto" }}>
-        <img
-          src="https://openai.com/content/images/2022/05/twitter-1.png"
-          alt="Open AI"
-          style={{ height: "5em", display: "block" }}
-        />
-        
-        <Tabs defaultTab='first'>
-      <Tabs.List>
-        <Tabs.Tab panelId="first">Features</Tabs.Tab>
-        <Tabs.Tab panelId="second">Configuration</Tabs.Tab>
-        <Tabs.Tab panelId="third">Feedback</Tabs.Tab>
-      </Tabs.List>
+    <Card style={{ maxWidth: "50em", margin: "3em auto" }}>
+      <img
+        src="https://openai.com/content/images/2022/05/twitter-1.png"
+        alt="Open AI"
+        style={{ height: "5em", display: "block" }}
+      />
 
-      <Tabs.Panel id="first">
-        <Heading marginTop='spacingS' as="h3">Features include</Heading>
-        <ul>
-          <li>Field Level App</li>
-          <li>Allows submitting a query to openAI</li>
-          <li>Select generated image and save to openAI</li>
-        </ul>
-      </Tabs.Panel>
-      <Tabs.Panel id="second">
-        <Heading marginTop='spacingS' as="h3">Configuration</Heading>
-        <Grid
-      style={{ width: '100%' }}
-      columns="1fr 2fr"
-      rowGap="spacingM"
-      columnGap="spacingM"
-    >
-      <Grid.Item><Paragraph>Open AI API Key</Paragraph></Grid.Item>
-      <Grid.Item>
-       
-        <TextInput
-          //value={this.parameters.openaiApiKey===undefined?'':''}
-          type="text"
-          name="openaiApiKey"
-          placeholder="Provide your Open AI API Key"
-        />
-       
-    </Grid.Item>
-      <Grid.Item><Paragraph>How many itms to display?</Paragraph></Grid.Item>
+      <Tabs defaultTab="first">
+        <Tabs.List>
+          <Tabs.Tab panelId="first">Features</Tabs.Tab>
+          <Tabs.Tab panelId="second">Configuration</Tabs.Tab>
+          <Tabs.Tab panelId="third">Feedback</Tabs.Tab>
+        </Tabs.List>
 
-      <TextInput
-          //value={this.parameters.openaiApiKey===undefined?'':this.parameters.openaiApiKey}
-          type="text"
-          name="numberOfElements"
-          placeholder="How many elements should be returned from Open AI"
-        />
-      <Grid.Item><Paragraph>Dimensions</Paragraph></Grid.Item>
-      <Grid.Item>
-      <TextInput
-          //value={this.parameters.openaiApiKey===undefined?'':this.parameters.openaiApiKey}
-          type="text"
-          name="dimension"
-          placeholder="Specify the dimensions"
-        />
+        <Tabs.Panel id="first">
+          <Heading marginTop="spacingS" as="h3">
+            Features include
+          </Heading>
+          <ul>
+            <li>Generate Images using OpenAI</li>
+            <li>Select image(s) and save as Asset inside Contentful</li>
+          </ul>
+        </Tabs.Panel>
+        <Tabs.Panel id="second">
+          <Heading marginTop="spacingS" as="h3">
+            Configuration
+          </Heading>
 
-      </Grid.Item>
-    </Grid>
-      </Tabs.Panel>
-      <Tabs.Panel id="third">
-        <Heading marginTop='spacingS' as="h3">Questions or comments?</Heading>
-        <Paragraph>Please reach out to <a href="mailto:patrick.geers@contentful.com">Patrick Geers</a> or <a href="mailto:dheeraj.palagiri@contentful.com">Dheeraj Palagiri
-  </a>.</Paragraph>
-      </Tabs.Panel>
-    </Tabs>
-        
-      </Card>
+          <Stack flexDirection="column" alignItems="left">
+            <FormControl isRequired isInvalid={!parameters.apiKey}>
+              <FormControl.Label>API Key</FormControl.Label>
+              <TextInput
+                value={parameters.apiKey}
+                name="apikey"
+                type="password"
+                placeholder="Your Dall-e API Key"
+                onChange={(e) => setParameters({...parameters, apiKey : e.target.value })}
+              />
+              <FormControl.HelpText>
+                Provide your Dall-e API Key
+              </FormControl.HelpText>
+              {!parameters.apiKey && (
+                <FormControl.ValidationMessage>
+                  Please, provide your API Key
+                </FormControl.ValidationMessage>
+              )}
+            </FormControl>
+
+            <FormControl isRequired isInvalid={!parameters.apiKey}>
+              <FormControl.Label>Items to display</FormControl.Label>
+
+              <TextInput
+                value={parameters.items?.toString()}
+                type="text"
+                name="numberOfElements"
+                placeholder="How many elements should be returned from Open AI"
+                onChange={(e) =>
+                  setParameters({...parameters, items: Number(e.target.value) })
+                }
+              />
+              <FormControl.HelpText>
+                Specify the number of images that should be generated
+              </FormControl.HelpText>
+              {!parameters.items && (
+                <FormControl.ValidationMessage>
+                  Please, specify the number of items
+                </FormControl.ValidationMessage>
+              )}
+            </FormControl>
+            <FormControl.Label>Select the dimension</FormControl.Label>
+
+
+              <Select
+                id="optionSelect-dimension"
+                name="dimension"
+                value={parameters.dimension}
+                
+                onChange={(event) => setParameters({...parameters, dimension: event.target.value })}
+              >
+                  <Select.Option value="1024x1024">1024x1024</Select.Option>
+                  <Select.Option value="512x512">512x512</Select.Option>
+
+                <Select.Option value="256x256">256x256</Select.Option>
+
+              </Select>
+              
+          </Stack>
+        </Tabs.Panel>
+        <Tabs.Panel id="third">
+          <Heading marginTop="spacingS" as="h3">
+            Questions or comments?
+          </Heading>
+          <Paragraph>
+            Please reach out to{" "}
+            <a href="mailto:patrick.geers@contentful.com">Patrick Geers</a> or{" "}
+            <a href="mailto:dheeraj.palagiri@contentful.com">
+              Dheeraj Palagiri
+            </a>
+            .
+          </Paragraph>
+        </Tabs.Panel>
+      </Tabs>
+    </Card>
   );
 };
 
