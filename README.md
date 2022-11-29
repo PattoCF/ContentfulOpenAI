@@ -9,7 +9,7 @@ This is POC field level app for the Media Reference field (multi). A user submit
 # App Definition
 The app definition needs to be set up for configuration page, and entry-field (media references, list).
  
-![App Definition](public/field-config.png)
+![App Definition](public/locations.png)
 
 # Configuration
 
@@ -20,6 +20,12 @@ The app requires only a few elements to be configured:
 - The image size (defaults to 1024x1024)
 
 ![Configuration screen](public/configuration.png)
+
+# Field Configuration
+Once the app is installed and configured in your space, you need to use the app's media reference entry field.
+
+![Field configuration](public/field-config.png)
+
 
 Please note that the configuration options for the image sizes are the only available dimensions the API accepts.
 
