@@ -1,7 +1,7 @@
 This project was bootstrapped with [Create Contentful App](https://github.com/contentful/create-contentful-app).
 
 
-This is POC field level app for the Media Reference field (multi). A user submits a prompt to OpenAI for image generation, which returns the configured number of images and image size to the field. The editor can select one or many images that should be created, decide if they should be published or not, and link the images into the Media Reference field.
+This is a POC field level app for the Media Reference field (multi). A user submits a prompt to OpenAI for image generation, which returns the configured number of images and image size to the field. The editor can select one or many images that should be created, decide if they should be published or not, and link the images into the Media Reference field.
 
 ![Screenshot of app](public/screenshot.png)
 
